@@ -1,0 +1,37 @@
+#!/bin/ksh -p
+
+. $(dirname ${.sh.file})/penv
+export PATH=$SOC_HOME/bin:$PATH
+
+CMD=$(basename $0)
+
+case $CMD in
+    pscala)
+	MAIN=scala.tools.nsc.MainGenericRunner;;
+    pscalac)
+	MAIN=scala.tools.nsc.Main;;
+    pfsc)
+	MAIN=scala.tools.nsc.CompileClient;;
+    pscalap)
+	MAIN=scala.tools.scalap.Main;;
+    pjava)
+	MAIN=;;
+    pjavac)
+	export CLASSPATH=$SCALA_CLASSPATH:$CLASSPATH
+	exec javac -J-Xms128m -J-Xmx512m -encoding UTF-8 $@;;
+    classpath)
+	exec echo -n $SCALA_CLASSPATH:$CLASSPATH;;
+    spec)
+	export CLASSPATH=$SCALA_CLASSPATH:$CLASSPATH
+	exec pscala org.scalatest.tools.Runner -p . -o -s $(classify $@);;
+    *)
+	echo "error: $CMD doesn't match any case"
+	exit 1;;
+esac
+
+PROPS='-Djava.net.preferIPv4Stack=true'
+if [ -z "$MAIN" ]; then
+    exec java $JVM_OPTS -cp $SCALA_CLASSPATH:$CLASSPATH -Dscala.home=$SCALA_HOME $PROPS $@
+else
+    exec java $JVM_OPTS -cp $SCALA_CLASSPATH:$CLASSPATH -Dscala.home=$SCALA_HOME $PROPS $MAIN -d $SOC_HOME/lib/classes -classpath $CLASSPATH $@
+fi

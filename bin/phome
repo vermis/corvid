@@ -1,0 +1,4 @@
+#!/bin/ksh -p
+ME=${.sh.file}
+[ -h "$ME" ] && ME=$(readlink -nf $ME)
+echo -n $(dirname $(dirname $ME))

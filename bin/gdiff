@@ -1,0 +1,4 @@
+#!/bin/ksh -p
+export PATH=$(dirname ${.sh.file}):/usr/bin:/bin:/usr/sbin:/sbin
+export GIT_EXTERNAL_DIFF=xdiff 
+git --no-pager diff --ext-diff "$@"

@@ -1,0 +1,8 @@
+#!/bin/ksh -p
+TYPE=$(file -i $1|awk '{print $2}'|sed 's#\(text\)/.*#\1#g')
+if [ "text" = "$TYPE" ]; then
+    xxdiff --geometry 1600x1024+150+50 "$1" "$2" --title2 "$3"
+else
+    echo "- ignoring $1"
+fi
+exit 0

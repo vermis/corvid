@@ -1,0 +1,31 @@
+require 'smart_colored/extend'
+
+desc "default target is [dev]"
+task :default => :dev
+
+desc "DEV config"
+task :dev do |t|
+    PACER = [{ :_USERNAME => 'user', :_PASSWORD => 'pass', :_CLIENTCODE => 'web' }]
+    puts "#{t.name.upcase} configuration".bold.green
+    m4([PACER], "web.m4", t)
+end
+
+def m4(parameters, file)
+    params = []; parameters.each { |e| params += e }
+
+    defs = ""
+    params.each do |e|
+        e.each do |k, v| 
+            if v.instance_of? String
+                defs += "-D#{k}='#{v}' "
+            elsif v.instance_of? Array
+                defs += "-D#{k}='#{v.join(',')}' " 
+            else
+                raise "error: cannot convert (#{v}) to m4 definition"
+            end
+        end
+    end
+
+    conf = "#{file.gsub(/[^\.]*$/, '')}conf"
+    sh "m4 #{defs.strip} #{file} > #{conf}" #if uptodate?(file, conf) 
+end

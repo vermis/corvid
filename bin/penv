@@ -1,0 +1,48 @@
+# this file is sourced by other scripts and possibly a user
+jvm_bits()
+{
+    BITS='-d64'
+    [ "`uname -m`" = "i686" ] && BITS=''
+    echo -n $BITS
+}
+
+jars()
+{
+    JAR_DIR=$1
+    CPATH=''
+    for i in $JAR_DIR/*.jar; do
+	if [ -z "$CPATH" ]; then 
+	    CPATH="$i"
+	else 
+	    CPATH="$CPATH:$i"
+	fi
+    done
+    echo -n $CPATH
+}
+
+SOURCED_BY_SCRIPT=1
+if [ "bash" = "$0" ]; then
+    MYDIR=$(dirname $BASH_SOURCE)
+    SOURCED_BY_SCRIPT=0
+elif [ "ksh" = "$0" ]; then
+    MYDIR=$(dirname ${.sh.file})
+    SOURCED_BY_SCRIPT=0
+elif [ "zsh" = "$0" ]; then
+    MYDIR=$(dirname $0)
+    SOURCED_BY_SCRIPT=0
+else
+    MYDIR=$(dirname $0)
+fi
+
+export SOC_HOME=$($MYDIR/phome)
+export SCALA_HOME=$SOC_HOME/opt/scala
+export JAVA_HOME=/usr/lib/jvm/java-6-sun
+export JAVA_TOOL_OPTIONS='-Dfile.encoding=UTF8'
+
+# scripts that ". penv" require the following env. variables
+if [ 1 -eq $SOURCED_BY_SCRIPT1 ]; then
+    export PATH=$JAVA_HOME/bin:$PATH
+    export JVM_OPTS="$(jvm_bits) -Xmx1024M -Xms512M -XX:MaxPermSize=512M $JVM_OPTS"
+    export CLASSPATH=$SOC_HOME/etc:$SOC_HOME/etc/properties:$SOC_HOME/lib/classes:$(jars $SOC_HOME/lib/jar):$SOC_HOME/opt/tomcat/lib/servlet-api.jar:$SOC_HOME/opt/zookeeper/zookeeper-3.3.3.jar
+    export SCALA_CLASSPATH=$(jars "$SCALA_HOME/lib")
+fi

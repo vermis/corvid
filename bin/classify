@@ -1,0 +1,3 @@
+#!/bin/ksh -p
+[ 0 -ne $# ] || return 0
+echo -n $1 | sed 's/.*\(com.*\)/\1/g' | sed -r 's/\.(class|scala|java)$//1' | sed 's#/#.#g'

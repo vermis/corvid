@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app>
+  <display-name>Corvid</display-name>
+  <description>Corvid</description>
+  <!-- <listener><listener-class>listeners.ContextListener</listener-class></listener> -->
+  <!-- <listener><listener-class>listeners.SessionListener</listener-class></listener> -->
+  <!--each servlet-name needs a servlet-mapping-->
+  <servlet>
+    <servlet-name>dispatch</servlet-name>
+    <display-name>dispatcher-servlet</display-name>
+    <servlet-class>co.topos.web.servlet/Dispatcher</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>dis</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>

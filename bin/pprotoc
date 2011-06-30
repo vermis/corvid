@@ -1,0 +1,6 @@
+#!/bin/ksh -p
+export PATH=/opt/protobuf/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+. $(dirname ${.sh.file})/penv
+exec protoc --java_out=$SOC_HOME/src/classes $*
+
+

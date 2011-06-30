@@ -1,0 +1,19 @@
+desc "default target is [dev]"
+task :default => :dev
+
+desc "DEV config"
+task :dev do
+    sh "m4 -D_RELOADABLE='true' context.m4 > context.xml"
+end
+
+desc "QA config"
+task :qa => :prod
+
+desc "PROD config"
+task :prod do
+    sh "m4 -D_RELOADABLE='false' context.m4 > context.xml"
+end
+
+task :clean do
+    sh "rm -f context.xml"
+end
